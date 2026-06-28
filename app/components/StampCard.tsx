@@ -20,7 +20,7 @@ export default function StampCard({ card }: Props) {
   const BrandLogo: ComponentType | null =
     BRAND_LOGOS[card.brand as BrandLogoKey] ?? null;
 
-  const stamps = Array.from({ length: card.stamps_required }, (_, i) => i < card.userStamps);
+  const stamps = Array.from({ length: card.stamps_required - 1 }, (_, i) => i < card.userStamps);
 
   return (
     <div className=" rounded-2xl flex " style={{ backgroundColor: "#252525" }}>
@@ -37,7 +37,7 @@ export default function StampCard({ card }: Props) {
         <div className="grid grid-cols-[repeat(4,36px)] gap-1">
           {stamps.map((filled, i) => (
             <span key={i} className={cn(
-              "!w-[37px] h-[37px] rounded-full bg-gold flex items-center justify-center overflow-hidden",
+              "relative !w-[37px] h-[37px] rounded-full bg-gold flex items-center justify-center overflow-hidden",
               filled ? "bg-gold" : "bg-white/80",
 
             )}>
@@ -47,13 +47,49 @@ export default function StampCard({ card }: Props) {
                   alt={card.brand}
                   width={25}
                   height={25}
-                  className="object-cover rounded-full "
+                  className={cn("object-cover rounded-full ", !filled && "grayscale")}
                 />
               ) : (
                 <span className="text-sm font-bold text-white">{card.brand.charAt(0).toUpperCase()}</span>
               )}
+              {!filled && <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: '#ffffff90',
+                  pointerEvents: 'none'
+                }}
+              />}
+
             </span>
           ))}
+
+          <span className={cn(
+            "relative !w-[37px] h-[37px] rounded-full bg-gold flex items-center justify-center overflow-hidden",
+            card.stamps_required == card.userStamps ? "bg-gold" : "bg-white/80",
+          )}>
+            <Image
+              src={"/reward.png"}
+              alt={card.brand}
+              width={25}
+              height={25}
+              className="object-cover rounded-full "
+            />
+            {card.userStamps < card.stamps_required && <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: '#ffffff20',
+                pointerEvents: 'none'
+              }}
+            />}
+          </span>
         </div>
       </div>
 
